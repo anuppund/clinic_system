@@ -1,1 +1,55 @@
-@tailwind base; @tailwind components; @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  input, select, textarea {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-card;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
+  }
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 active:scale-[0.98] transition-all duration-200 shadow-soft hover:shadow-elevated disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply px-6 py-3 bg-secondary-100 text-secondary-700 font-semibold rounded-xl hover:bg-secondary-200 active:scale-[0.98] transition-all duration-200;
+  }
+  .btn-danger {
+    @apply px-6 py-3 bg-danger-50 text-danger-600 font-semibold rounded-xl hover:bg-danger-100 active:scale-[0.98] transition-all duration-200;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 bg-secondary-50 border border-secondary-200 rounded-xl text-secondary-900 placeholder:text-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200;
+  }
+  .card {
+    @apply bg-white rounded-2xl border border-secondary-100 shadow-card hover:shadow-elevated transition-shadow duration-300;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .skeleton {
+    @apply bg-gradient-to-r from-secondary-200 via-secondary-100 to-secondary-200 bg-[length:1000px_100%] animate-shimmer rounded-lg;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
