@@ -2,23 +2,35 @@ import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, CircleUser as UserCircle, Menu, X, LayoutDashboard, Users, Stethoscope, CalendarDays, FileText, Bell, ChevronRight } from 'lucide-react';
+import { 
+  LogOut, 
+  CircleUser as UserCircle, 
+  Menu, 
+  LayoutDashboard, 
+  Users, 
+  Stethoscope, 
+  CalendarDays, 
+  FileText, 
+  Bell, 
+  ChevronRight,
+  Activity
+} from 'lucide-react';
 
 const navConfig: Record<string, { label: string; icon: React.ReactNode; path: string }[]> = {
   admin: [
-    { label: 'Overview', icon: <LayoutDashboard size={18} />, path: '/admin' },
-    { label: 'Doctors', icon: <Stethoscope size={18} />, path: '/admin?tab=doctors' },
-    { label: 'Users', icon: <Users size={18} />, path: '/admin?tab=users' },
-    { label: 'Reminders', icon: <Bell size={18} />, path: '/admin?tab=reminders' },
+    { label: 'Overview', icon: <LayoutDashboard size={20} />, path: '/admin' },
+    { label: 'Doctors', icon: <Stethoscope size={20} />, path: '/admin?tab=doctors' },
+    { label: 'Users', icon: <Users size={20} />, path: '/admin?tab=users' },
+    { label: 'Reminders', icon: <Bell size={20} />, path: '/admin?tab=reminders' },
   ],
   doctor: [
-    { label: 'Appointments', icon: <CalendarDays size={18} />, path: '/doctor' },
-    { label: 'Records', icon: <FileText size={18} />, path: '/doctor?tab=records' },
+    { label: 'Appointments', icon: <CalendarDays size={20} />, path: '/doctor' },
+    { label: 'Records', icon: <FileText size={20} />, path: '/doctor?tab=records' },
   ],
   patient: [
-    { label: 'Book Visit', icon: <CalendarDays size={18} />, path: '/patient' },
-    { label: 'My Appointments', icon: <CalendarDays size={18} />, path: '/patient?tab=myAppts' },
-    { label: 'My History', icon: <FileText size={18} />, path: '/patient?tab=myRecords' },
+    { label: 'Book Visit', icon: <CalendarDays size={20} />, path: '/patient' },
+    { label: 'My Appointments', icon: <CalendarDays size={20} />, path: '/patient?tab=myAppts' },
+    { label: 'My History', icon: <FileText size={20} />, path: '/patient?tab=myRecords' },
   ],
 };
 
@@ -39,10 +51,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return location.pathname === path;
   };
 
-  const roleColors: Record<string, string> = {
-    admin: 'bg-primary-100 text-primary-700',
-    doctor: 'bg-accent-100 text-accent-700',
-    patient: 'bg-warning-100 text-warning-700',
+  const handleLogout = () => {
+    logout();
+    navigate('/auth');
+  };
+
+  const roleStyles: Record<string, { bg: string; text: string; badge: string }> = {
+    admin: { bg: 'bg-blue-100', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-700 border-blue-200' },
+    doctor: { bg: 'bg-emerald-100', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+    patient: { bg: 'bg-amber-100', text: 'text-amber-700', badge: 'bg-amber-100 text-amber-700 border-amber-200' },
   };
 
   const roleLabel: Record<string, string> = {
@@ -51,8 +68,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     patient: 'Patient',
   };
 
+  const currentStyle = roleStyles[role] || { bg: 'bg-slate-100', text: 'text-slate-600', badge: 'bg-slate-100 text-slate-700 border-slate-200' };
+
   return (
-    <div className="min-h-screen flex bg-secondary-50">
+    <div className="min-h-screen flex bg-slate-50 font-sans">
       {/* Mobile overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -61,7 +80,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-secondary-900/30 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
           />
         )}
       </AnimatePresence>
@@ -71,109 +90,126 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         initial={false}
         animate={{ x: sidebarOpen ? 0 : -280 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-[280px] bg-white border-r border-secondary-100 flex flex-col shadow-lg lg:shadow-none`}
+        className="fixed lg:static inset-y-0 left-0 z-50 w-[280px] bg-white border-r border-slate-200 flex flex-col shadow-2xl lg:shadow-none"
       >
-        {/* Logo */}
-        <div className="p-6 border-b border-secondary-100">
+        {/* Logo Section */}
+        <div className="p-6 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl shadow-glow">
-              <Stethoscope size={22} className="text-white" />
+            <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-md shadow-blue-500/30">
+              <Activity size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-secondary-900 leading-tight">ClinicIQ</h1>
-              <p className="text-[10px] text-secondary-400 font-medium uppercase tracking-widest">Management</p>
+              <h1 className="text-xl font-extrabold text-slate-800 tracking-tight leading-none">ClinicIQ</h1>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Health Portal</p>
             </div>
           </div>
         </div>
 
         {/* User Card */}
-        <div className="p-4 mx-4 mt-4 bg-gradient-to-br from-secondary-50 to-secondary-100/50 rounded-2xl border border-secondary-100">
+        <div className="p-4 mx-4 mt-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-xl ${roleColors[role] || 'bg-secondary-100 text-secondary-600'}`}>
-              <UserCircle size={22} />
+            <div className={`p-2 rounded-xl ${currentStyle.bg} ${currentStyle.text}`}>
+              <UserCircle size={24} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-secondary-900 truncate">{user?.name}</p>
-              <p className="text-xs text-secondary-500">{roleLabel[role] || role}</p>
+              <p className="text-sm font-bold text-slate-800 truncate">{user?.name || 'User'}</p>
+              <p className="text-xs font-medium text-slate-500 truncate">{user?.email || roleLabel[role] || role}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <p className="px-3 py-2 text-[10px] font-bold text-secondary-400 uppercase tracking-widest">Menu</p>
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => {
-                navigate(item.path);
-                setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                isActive(item.path)
-                  ? 'bg-primary-50 text-primary-700 shadow-soft'
-                  : 'text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900'
-              }`}
-            >
-              <span className={isActive(item.path) ? 'text-primary-600' : 'text-secondary-400 group-hover:text-secondary-600'}>
-                {item.icon}
-              </span>
-              <span className="flex-1 text-left">{item.label}</span>
-              <ChevronRight
-                size={14}
-                className={`transition-transform ${isActive(item.path) ? 'text-primary-400 translate-x-0 opacity-100' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-secondary-300'}`}
-              />
-            </button>
-          ))}
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+          <p className="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
+          {navItems.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <button
+                key={item.label}
+                onClick={() => {
+                  navigate(item.path);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+                  active
+                    ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <span className={`${active ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'} transition-colors`}>
+                  {item.icon}
+                </span>
+                <span className="flex-1 text-left">{item.label}</span>
+                {active && (
+                  <motion.div layoutId="active-indicator" className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Logout */}
-        <div className="p-4 border-t border-secondary-100">
+        {/* Sidebar Logout (Desktop focus) */}
+        <div className="p-4 border-t border-slate-100">
           <button
-            onClick={() => {
-              logout();
-              navigate('/auth');
-            }}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-danger-600 hover:bg-danger-50 transition-all duration-200 group"
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 hover:shadow-sm border border-red-100 transition-all duration-200"
           >
-            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
-            <span>Sign Out</span>
+            <LogOut size={18} />
+            <span>Secure Logout</span>
           </button>
         </div>
       </motion.aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-secondary-100 px-6 py-3 flex items-center justify-between lg:justify-end">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-xl hover:bg-secondary-100 text-secondary-600 transition-colors"
-          >
-            <Menu size={22} />
-          </button>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Top Header */}
+        <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors"
+            >
+              <Menu size={24} />
+            </button>
+            
+            <h2 className="text-xl font-bold text-slate-800 hidden sm:block">
+              {navItems.find(item => isActive(item.path))?.label || 'Dashboard'}
+            </h2>
+          </div>
 
-          <div className="flex items-center gap-3">
-            <span className={`hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${roleColors[role] || ''}`}>
+          <div className="flex items-center gap-4">
+            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${currentStyle.badge}`}>
               {roleLabel[role] || role}
             </span>
-            <div className="flex items-center gap-2 bg-secondary-50 px-3 py-1.5 rounded-full border border-secondary-100">
-              <UserCircle size={16} className="text-secondary-400" />
-              <span className="text-sm font-medium text-secondary-700 hidden sm:inline">{user?.name}</span>
-            </div>
+            
+            <div className="h-8 w-px bg-slate-200 hidden sm:block"></div>
+
+            {/* TOP LOGOUT BUTTON (Always accessible) */}
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-red-600 transition-colors"
+              title="Logout"
+            >
+              <span className="hidden sm:block">Sign Out</span>
+              <div className="p-2 bg-slate-100 rounded-full hover:bg-red-50 transition-colors">
+                <LogOut size={18} />
+              </div>
+            </button>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
-          <motion.div
-            key={location.pathname + location.search}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {children}
-          </motion.div>
+        {/* Page Content */}
+        <main className="flex-1 p-4 sm:p-8 overflow-y-auto">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              key={location.pathname + location.search}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              {children}
+            </motion.div>
+          </div>
         </main>
       </div>
     </div>
